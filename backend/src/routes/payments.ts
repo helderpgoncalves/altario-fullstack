@@ -1,5 +1,5 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { v4 as uuidv4 } from 'uuid';
+import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Represents a payment in the system.
@@ -30,7 +30,10 @@ export default async function paymentRoutes(fastify: FastifyInstance) {
   fastify.get("/payments", getAllPayments);
   fastify.post<{ Body: PaymentInput }>("/payments", createPayment);
   fastify.get<{ Params: { id: string } }>("/payments/:id", getPaymentById);
-  fastify.put<{ Params: { id: string }, Body: PaymentUpdate }>("/payments/:id", updatePayment);
+  fastify.put<{ Params: { id: string }; Body: PaymentUpdate }>(
+    "/payments/:id",
+    updatePayment
+  );
   fastify.delete<{ Params: { id: string } }>("/payments/:id", deletePayment);
 }
 
@@ -39,7 +42,7 @@ export default async function paymentRoutes(fastify: FastifyInstance) {
  * @returns An object containing an array of all payments.
  */
 async function getAllPayments() {
-  return { payments };
+  return payments;
 }
 
 /**
@@ -48,7 +51,10 @@ async function getAllPayments() {
  * @param reply - The FastifyReply object for sending the response.
  * @returns The created payment or an error response.
  */
-async function createPayment(request: FastifyRequest<{ Body: PaymentInput }>, reply: FastifyReply) {
+async function createPayment(
+  request: FastifyRequest<{ Body: PaymentInput }>,
+  reply: FastifyReply
+) {
   const { name, amount, code, grid } = request.body;
   const errors = validatePayment({ name, amount, code, grid });
 
@@ -75,7 +81,10 @@ async function createPayment(request: FastifyRequest<{ Body: PaymentInput }>, re
  * @param reply - The FastifyReply object for sending the response.
  * @returns The requested payment or a not found error.
  */
-async function getPaymentById(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+async function getPaymentById(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) {
   const payment = findPaymentById(request.params.id);
   if (!payment) {
     return reply.code(404).send({ error: "Payment not found" });
@@ -89,15 +98,18 @@ async function getPaymentById(request: FastifyRequest<{ Params: { id: string } }
  * @param reply - The FastifyReply object for sending the response.
  * @returns The updated payment or a not found error.
  */
-async function updatePayment(request: FastifyRequest<{ Params: { id: string }, Body: PaymentUpdate }>, reply: FastifyReply) {
+async function updatePayment(
+  request: FastifyRequest<{ Params: { id: string }; Body: PaymentUpdate }>,
+  reply: FastifyReply
+) {
   const { id } = request.params;
   const updateData = request.body;
-  const paymentIndex = payments.findIndex(p => p.id === id);
-  
+  const paymentIndex = payments.findIndex((p) => p.id === id);
+
   if (paymentIndex === -1) {
     return reply.code(404).send({ error: "Payment not found" });
   }
-  
+
   payments[paymentIndex] = { ...payments[paymentIndex], ...updateData };
   return { payment: payments[paymentIndex] };
 }
@@ -108,14 +120,17 @@ async function updatePayment(request: FastifyRequest<{ Params: { id: string }, B
  * @param reply - The FastifyReply object for sending the response.
  * @returns A success message or a not found error.
  */
-async function deletePayment(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+async function deletePayment(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) {
   const { id } = request.params;
-  const paymentIndex = payments.findIndex(p => p.id === id);
-  
+  const paymentIndex = payments.findIndex((p) => p.id === id);
+
   if (paymentIndex === -1) {
     return reply.code(404).send({ error: "Payment not found" });
   }
-  
+
   payments.splice(paymentIndex, 1);
   return { success: true };
 }
@@ -130,7 +145,7 @@ function validatePayment(payment: PaymentInput): string[] {
   const errors: string[] = [];
 
   if (!name?.trim()) errors.push("Invalid name");
-  if (typeof amount !== 'number' || amount <= 0) errors.push("Invalid amount");
+  if (typeof amount !== "number" || amount <= 0) errors.push("Invalid amount");
   if (!code?.trim()) errors.push("Invalid code");
   if (!isValidGrid(grid)) errors.push("Invalid grid");
 
@@ -143,7 +158,11 @@ function validatePayment(payment: PaymentInput): string[] {
  * @returns True if the grid is valid, false otherwise.
  */
 function isValidGrid(grid: string[][]): boolean {
-  return Array.isArray(grid) && grid.length > 0 && grid.every(row => Array.isArray(row) && row.length > 0);
+  return (
+    Array.isArray(grid) &&
+    grid.length > 0 &&
+    grid.every((row) => Array.isArray(row) && row.length > 0)
+  );
 }
 
 /**
@@ -152,5 +171,5 @@ function isValidGrid(grid: string[][]): boolean {
  * @returns The found payment or undefined if not found.
  */
 function findPaymentById(id: string): Payment | undefined {
-  return payments.find(p => p.id === id);
+  return payments.find((p) => p.id === id);
 }

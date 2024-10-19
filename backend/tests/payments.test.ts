@@ -1,7 +1,7 @@
 import Fastify, { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import paymentsRoutes from "../src/routes/payments";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 describe("Payments API", () => {
   let app: FastifyInstance;
@@ -45,15 +45,19 @@ describe("Payments API", () => {
       expect(response.statusCode).toBe(200);
       const payload = JSON.parse(response.payload);
       expect(payload.payment).toMatchObject(samplePayment);
-      expect(payload.payment.id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
-      expect(payload.payment.createdAt).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+      expect(payload.payment.id).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+      );
+      expect(payload.payment.createdAt).toMatch(
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/
+      );
     });
 
     it("should return 400 for invalid payment data", async () => {
       const response = await app.inject({
         method: "POST",
         url: "/payments",
-        payload: { name: "", amount: -10, code: "", grid: [] }, 
+        payload: { name: "", amount: -10, code: "", grid: [] },
       });
 
       expect(response.statusCode).toBe(400);
@@ -71,7 +75,7 @@ describe("Payments API", () => {
 
       expect(response.statusCode).toBe(200);
       const payload = JSON.parse(response.payload);
-      expect(payload.payments).toHaveLength(1); // Because we have 1 payment in the beforeEach
+      expect(payload).toHaveLength(1);
     });
 
     it("should return all payments", async () => {
@@ -88,8 +92,8 @@ describe("Payments API", () => {
 
       expect(response.statusCode).toBe(200);
       const payload = JSON.parse(response.payload);
-      expect(payload.payments).toHaveLength(2);
-      expect(payload.payments[0]).toMatchObject(samplePayment);
+      expect(payload).toHaveLength(2);
+      expect(payload[0]).toMatchObject(samplePayment);
     });
   });
 
