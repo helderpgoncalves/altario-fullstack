@@ -1,9 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-
-interface GridData {
-  grid: string[][];
-  code: string;
-}
+import { GridData } from "../types";
 
 interface GridContextType {
   gridData: GridData;

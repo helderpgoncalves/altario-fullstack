@@ -12,7 +12,7 @@ const Grid: React.FC<GridProps> = ({ grid, biasChar }) => (
         <div
           key={`${rowIndex}-${cellIndex}`}
           className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center rounded-sm shadow-sm text-xs sm:text-sm md:text-base ${
-            cell === biasChar ? 'bg-yellow-300' : 'bg-white'
+            cell === biasChar ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' : 'bg-white'
           }`}
         >
           {cell}
