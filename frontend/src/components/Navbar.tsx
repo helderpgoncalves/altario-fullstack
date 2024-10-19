@@ -1,17 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const navItems = [
     { path: '/', label: 'Grid' },
@@ -19,26 +10,22 @@ const Navbar: React.FC = () => {
   ];
 
   return (
-    <nav
-      className={`fixed w-full z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md' : 'bg-transparent'
-      }`}
-    >
-      <div className="container mx-auto px-4 py-3">
-        <ul className="flex justify-center space-x-8">
+    <nav className="fixed w-full z-50 bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg">
+      <div className="container mx-auto px-4">
+        <ul className="flex space-x-4">
           {navItems.map((item) => (
             <li key={item.path}>
               <Link
                 to={item.path}
-                className={`text-lg font-medium relative px-2 py-1 transition-colors duration-200 ${
+                className={`block py-3 px-4 text-sm font-medium rounded-md transition-all duration-300 transform hover:scale-105 ${
                   location.pathname === item.path
-                    ? 'text-blue-600'
-                    : 'text-gray-700 hover:text-blue-500'
+                    ? 'text-white border-b-1 border-white'
+                    : 'text-gray-200'
                 }`}
               >
                 {item.label}
                 {location.pathname === item.path && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform origin-left scale-x-100 transition-transform duration-300"></span>
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white"></span>
                 )}
               </Link>
             </li>

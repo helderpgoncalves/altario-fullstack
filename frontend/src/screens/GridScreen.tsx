@@ -11,7 +11,7 @@ const GridScreen: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-4xl sm:text-5xl font-extrabold mb-8 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-6 sm:mb-8 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
         10x10 Grid Generator
       </h1>
       <GridGenerator
@@ -20,7 +20,7 @@ const GridScreen: React.FC = () => {
         biasChar={biasChar}
         onBiasChange={handleBiasChange}
       />
-      {gridData.grid.length > 0 && <Grid grid={gridData.grid} />}
+      {gridData.grid.length > 0 && <Grid grid={gridData.grid} biasChar={biasChar} />}
       {gridData.code && <CodeDisplay code={gridData.code} />}
     </div>
   );

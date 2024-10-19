@@ -10,7 +10,7 @@ const App: React.FC = () => (
     <Router>
       <div className="flex flex-col min-h-screen">
         <Navbar />
-        <main className="flex-grow p-4">
+        <main className="flex-grow mt-10">
           <Routes>
             <Route path="/" element={<GridScreen />} />
             <Route path="/payments" element={<PaymentsScreen />} />
