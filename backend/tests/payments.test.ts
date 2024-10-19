@@ -44,11 +44,11 @@ describe("Payments API", () => {
 
       expect(response.statusCode).toBe(200);
       const payload = JSON.parse(response.payload);
-      expect(payload.payment).toMatchObject(samplePayment);
-      expect(payload.payment.id).toMatch(
+      expect(payload).toMatchObject(samplePayment);
+      expect(payload.id).toMatch(
         /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
       );
-      expect(payload.payment.createdAt).toMatch(
+      expect(payload.createdAt).toMatch(
         /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/
       );
     });
@@ -104,7 +104,7 @@ describe("Payments API", () => {
         url: "/payments",
         payload: samplePayment,
       });
-      const { id } = JSON.parse(createResponse.payload).payment;
+      const { id } = JSON.parse(createResponse.payload);
 
       const response = await app.inject({
         method: "GET",
@@ -113,8 +113,8 @@ describe("Payments API", () => {
 
       expect(response.statusCode).toBe(200);
       const payload = JSON.parse(response.payload);
-      expect(payload.payment).toMatchObject(samplePayment);
-      expect(payload.payment.id).toBe(id);
+      expect(payload).toMatchObject(samplePayment);
+      expect(payload.id).toBe(id);
     });
 
     it("should return 404 for non-existent payment", async () => {
@@ -137,7 +137,7 @@ describe("Payments API", () => {
         url: "/payments",
         payload: samplePayment,
       });
-      const { id } = JSON.parse(createResponse.payload).payment;
+      const { id } = JSON.parse(createResponse.payload);
 
       const updatedData = { name: "Updated Payment", amount: 200 };
       const response = await app.inject({
@@ -148,11 +148,11 @@ describe("Payments API", () => {
 
       expect(response.statusCode).toBe(200);
       const payload = JSON.parse(response.payload);
-      expect(payload.payment).toMatchObject({
+      expect(payload).toMatchObject({
         ...samplePayment,
         ...updatedData,
       });
-      expect(payload.payment.id).toBe(id);
+      expect(payload.id).toBe(id);
     });
 
     it("should return 404 for updating non-existent payment", async () => {
@@ -176,7 +176,7 @@ describe("Payments API", () => {
         url: "/payments",
         payload: samplePayment,
       });
-      const { id } = JSON.parse(createResponse.payload).payment;
+      const { id } = JSON.parse(createResponse.payload);
 
       const deleteResponse = await app.inject({
         method: "DELETE",

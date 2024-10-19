@@ -72,7 +72,7 @@ async function createPayment(
   };
 
   payments.push(newPayment);
-  return reply.code(200).send({ payment: newPayment });
+  return reply.code(200).send(newPayment);
 }
 
 /**
@@ -89,7 +89,7 @@ async function getPaymentById(
   if (!payment) {
     return reply.code(404).send({ error: "Payment not found" });
   }
-  return { payment };
+  return payment;
 }
 
 /**
@@ -111,7 +111,7 @@ async function updatePayment(
   }
 
   payments[paymentIndex] = { ...payments[paymentIndex], ...updateData };
-  return { payment: payments[paymentIndex] };
+  return payments[paymentIndex];
 }
 
 /**
