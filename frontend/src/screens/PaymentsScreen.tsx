@@ -5,6 +5,7 @@ import { Payment } from "../types";
 import CodeDisplay from "../components/CodeDisplay";
 import PaymentForm from "../components/PaymentForm";
 import PaymentTable from "../components/PaymentTable";
+import { sendWebSocketMessage } from "../websocket/connection";
 
 const PaymentsScreen: React.FC = () => {
   const { gridData } = useGridContext();
@@ -13,6 +14,20 @@ const PaymentsScreen: React.FC = () => {
 
   useEffect(() => {
     loadPayments();
+  }, []);
+
+  useEffect(() => {
+    const handleWebSocketMessage = (event: MessageEvent) => {
+      const data = JSON.parse(event.data);
+      if (data.type === "PAYMENT_ADDED") {
+        setPayments((prevPayments) => [...prevPayments, data.payload]);
+      }
+    };
+
+    window.addEventListener("message", handleWebSocketMessage);
+    return () => {
+      window.removeEventListener("message", handleWebSocketMessage);
+    };
   }, []);
 
   const loadPayments = async () => {
@@ -32,19 +47,14 @@ const PaymentsScreen: React.FC = () => {
 
   const handleSubmit = async (name: string, amount: number) => {
     try {
-      const newPayment = await createPayment({
-        name,
-        amount,
-        code: gridData.code,
-        grid: gridData.grid,
-      });
-      setPayments(prevPayments => {
-        if (Array.isArray(prevPayments)) {
-          return [...prevPayments, newPayment];
-        } else {
-          console.error("Previous payments is not an array:", prevPayments);
-          return [newPayment];
-        }
+      sendWebSocketMessage({
+        type: "ADD_PAYMENT",
+        payload: {
+          name,
+          amount,
+          code: gridData.code,
+          grid: gridData.grid,
+        },
       });
     } catch (error) {
       console.error("Error creating payment:", error);

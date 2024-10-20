@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { GridData } from "../types";
+import { sendWebSocketMessage } from "../websocket/connection";
 
 interface GridContextType {
   gridData: GridData;
@@ -55,6 +56,25 @@ export const GridProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setBiasChar(value);
     }
   };
+
+  const startGenerating = () => {
+    setIsGenerating(true);
+    sendWebSocketMessage({ type: "START_GENERATOR" });
+  };
+
+  useEffect(() => {
+    const handleWebSocketMessage = (event: MessageEvent) => {
+      const data = JSON.parse(event.data);
+      if (data.type === "GRID_UPDATE") {
+        setGridData(data.payload);
+      }
+    };
+
+    window.addEventListener("message", handleWebSocketMessage);
+    return () => {
+      window.removeEventListener("message", handleWebSocketMessage);
+    };
+  }, []);
 
   return (
     <GridContext.Provider 
