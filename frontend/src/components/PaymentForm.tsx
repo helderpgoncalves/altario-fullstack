@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { GridData } from "../types";
 
 interface PaymentFormProps {
-  onSubmit: (name: string, amount: number) => Promise<void>;
+  onSubmit: (name: string, amount: number) => void;
   gridData: GridData;
 }
 

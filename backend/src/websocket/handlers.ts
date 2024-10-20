@@ -18,6 +18,12 @@ export const websocketHandlers = {
   handleConnection: (connection: WebSocket) => {
     clients.add(connection);
 
+    // Send initial payments list
+    const initialPayments = paymentService.getAllPayments();
+    connection.send(
+      JSON.stringify({ type: "PAYMENTS_LIST", payload: initialPayments })
+    );
+
     connection.on("message", (message: string) => {
       const data = JSON.parse(message);
       switch (data.type) {
@@ -25,7 +31,7 @@ export const websocketHandlers = {
           handleStartGenerator(data.payload?.biasChar || null);
           break;
         case "ADD_PAYMENT":
-          handleAddPayment(data.payload);
+          handleAddPayment(data.payload, connection);
           break;
         case "GET_PAYMENTS":
           handleGetPayments(connection);
@@ -40,7 +46,7 @@ export const websocketHandlers = {
 
   broadcastToAll: (message: any) => {
     const messageString = JSON.stringify(message);
-    clients.forEach(client => {
+    clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(messageString);
       }
@@ -62,9 +68,12 @@ function handleStartGenerator(biasChar: string | null): void {
  * Creates a new payment and broadcasts it to all clients
  * @param {any} paymentData - The payment data to be added
  */
-function handleAddPayment(paymentData: any): void {
+function handleAddPayment(paymentData: any, connection: WebSocket): void {
   const newPayment = paymentService.createPayment(paymentData);
-  websocketHandlers.broadcastToAll({ type: "PAYMENT_ADDED", payload: newPayment });
+  websocketHandlers.broadcastToAll({
+    type: "PAYMENT_ADDED",
+    payload: newPayment,
+  });
 }
 
 /**

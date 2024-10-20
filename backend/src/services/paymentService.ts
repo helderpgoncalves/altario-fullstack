@@ -15,6 +15,10 @@ export type PaymentUpdate = Partial<Pick<Payment, "name" | "amount">>;
 
 let payments: Payment[] = [];
 
+// Load initial payments from a file or database here
+// For simplicity, we'll just keep it in memory for now, but in a real application,
+// you'd want to persist this data
+
 export const paymentService = {
   getAllPayments: (): Payment[] => payments,
 
@@ -54,6 +58,10 @@ export const paymentService = {
     if (!isValidGrid(payment.grid)) errors.push("Invalid grid");
     return errors;
   },
+
+  loadPayments: () => {
+    return payments;
+  },
 };
 
 function isValidGrid(grid: string[][]): boolean {
@@ -63,3 +71,6 @@ function isValidGrid(grid: string[][]): boolean {
     grid.every((row) => Array.isArray(row) && row.length > 0)
   );
 }
+
+// Call loadPayments when the server starts
+paymentService.loadPayments();

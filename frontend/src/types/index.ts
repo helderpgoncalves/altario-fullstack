@@ -9,6 +9,7 @@ export interface Payment {
 export interface GridData {
   grid: string[][];
   code: string;
+  seconds: number;
 }
 
 export interface CreatePaymentData {

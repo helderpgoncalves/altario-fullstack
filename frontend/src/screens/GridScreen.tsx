@@ -5,9 +5,15 @@ import CodeDisplay from "../components/CodeDisplay";
 import { useGridContext } from "../contexts/GridContext";
 
 const GridScreen: React.FC = () => {
-  const { gridData, isGenerating, setIsGenerating, biasChar, handleBiasChange } = useGridContext();
+  const { gridData, isGenerating, startGenerating, stopGenerating, biasChar, handleBiasChange } = useGridContext();
 
-  const handleStartStop = () => setIsGenerating((prev) => !prev);
+  const handleStartStop = () => {
+    if (!isGenerating) {
+      startGenerating();
+    } else {
+      stopGenerating();
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">

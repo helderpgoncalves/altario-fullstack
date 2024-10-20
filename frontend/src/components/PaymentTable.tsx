@@ -6,10 +6,6 @@ interface PaymentTableProps {
   payments: Payment[];
 }
 
-interface PaymentTableProps {
-  payments: Payment[];
-}
-
 const PaymentTable: React.FC<PaymentTableProps> = ({ payments }) => {
   const [selectedGrid, setSelectedGrid] = useState<string[][] | null>(null);
 
@@ -34,8 +30,8 @@ const PaymentTable: React.FC<PaymentTableProps> = ({ payments }) => {
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
-            {payments.map((payment) => (
-              <tr key={payment.id} className="border-b border-gray-200 hover:bg-gray-100">
+            {payments.map((payment, index) => (
+              <tr key={`${payment.id}-${index}`} className="border-b border-gray-200 hover:bg-gray-100">
                 <td className="py-3 px-6 text-left whitespace-nowrap">{payment.name}</td>
                 <td className="py-3 px-6 text-left">${payment.amount.toFixed(2)}</td>
                 <td className="py-3 px-6 text-left">
