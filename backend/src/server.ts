@@ -2,12 +2,14 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { gridRoutes } from "./routes/grid";
 import paymentRoutes from "./routes/payments";
+import websocket from "@fastify/websocket";
 
 const fastify = Fastify({ logger: true });
 
 fastify.register(cors, { origin: true });
 fastify.register(gridRoutes);
 fastify.register(paymentRoutes);
+fastify.register(websocket);
 
 fastify.get("/", () => ({ message: "Hello from the backend!" }));
 
