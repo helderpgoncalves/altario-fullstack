@@ -39,7 +39,7 @@ describe('WebSocket Tests', () => {
   });
 
   it('should receive grid update when START_GENERATOR message is sent', (done) => {
-    ws.send(JSON.stringify({ type: 'START_GENERATOR' }));
+    ws.send(JSON.stringify({ type: 'START_GENERATOR', payload: { biasChar: null } }));
 
     ws.once('message', (data) => {
       const message = JSON.parse(data.toString());
@@ -61,7 +61,7 @@ describe('WebSocket Tests', () => {
 
     ws.send(JSON.stringify({ type: 'ADD_PAYMENT', payload: paymentData }));
 
-    ws.once('message', (data) => {
+    ws.once('message', (data: any) => {
       const message = JSON.parse(data.toString());
       expect(message.type).toBe('PAYMENT_ADDED');
       expect(message.payload).toMatchObject(paymentData);

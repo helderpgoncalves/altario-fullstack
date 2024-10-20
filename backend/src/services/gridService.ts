@@ -23,15 +23,18 @@ export const gridService = {
     const char1 = grid[3][6];
     const char2 = grid[6][3];
 
-    const countChar1 = grid.flat().filter((char) => char === char1).length;
-    const countChar2 = grid.flat().filter((char) => char === char2).length;
+    let countChar1 = grid.flat().filter((char) => char === char1).length;
+    let countChar2 = grid.flat().filter((char) => char === char2).length;
 
-    const finalCount1 =
-      countChar1 > 9 ? Math.floor(countChar1 / 2) : countChar1;
-    const finalCount2 =
-      countChar2 > 9 ? Math.floor(countChar2 / 2) : countChar2;
+    while (countChar1 > 9) {
+      countChar1 = Math.floor(countChar1 / 2);
+    }
 
-    return `${finalCount1}${finalCount2}`;
+    while (countChar2 > 9) {
+      countChar2 = Math.floor(countChar2 / 2);
+    }
+
+    return `${countChar1}${countChar2}`;
   },
 
   generateGridData(biasChar: string | null = null): GridData {

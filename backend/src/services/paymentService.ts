@@ -27,7 +27,6 @@ export const paymentService = {
       createdAt: new Date(),
     };
     payments.push(newPayment);
-    websocketHandlers.broadcastToAll(JSON.stringify({ type: "PAYMENT_ADDED", payload: newPayment }));
     return newPayment;
   },
 

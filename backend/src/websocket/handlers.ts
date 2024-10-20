@@ -22,10 +22,13 @@ export const websocketHandlers = {
       const data = JSON.parse(message);
       switch (data.type) {
         case "START_GENERATOR":
-          handleStartGenerator();
+          handleStartGenerator(data.payload?.biasChar || null);
           break;
         case "ADD_PAYMENT":
           handleAddPayment(data.payload);
+          break;
+        case "GET_PAYMENTS":
+          handleGetPayments(connection);
           break;
       }
     });
@@ -35,10 +38,11 @@ export const websocketHandlers = {
     });
   },
 
-  broadcastToAll: (message: string) => {
+  broadcastToAll: (message: any) => {
+    const messageString = JSON.stringify(message);
     clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(message);
+        client.send(messageString);
       }
     });
   },
@@ -48,9 +52,9 @@ export const websocketHandlers = {
  * Handles the START_GENERATOR message
  * Generates new grid data and broadcasts it to all clients
  */
-function handleStartGenerator(): void {
-  const gridData = gridService.generateGridData();
-  broadcast({ type: "GRID_UPDATE", payload: gridData });
+function handleStartGenerator(biasChar: string | null): void {
+  const gridData = gridService.generateGridData(biasChar);
+  websocketHandlers.broadcastToAll({ type: "GRID_UPDATE", payload: gridData });
 }
 
 /**
@@ -60,18 +64,15 @@ function handleStartGenerator(): void {
  */
 function handleAddPayment(paymentData: any): void {
   const newPayment = paymentService.createPayment(paymentData);
-  broadcast({ type: "PAYMENT_ADDED", payload: newPayment });
+  websocketHandlers.broadcastToAll({ type: "PAYMENT_ADDED", payload: newPayment });
 }
 
 /**
- * Broadcasts a message to all connected clients
- * @param {any} message - The message to broadcast
+ * Handles the GET_PAYMENTS message
+ * Retrieves the payment list and sends it to the client
+ * @param {WebSocket} connection - The WebSocket connection
  */
-function broadcast(message: any): void {
-  const messageString = JSON.stringify(message);
-  clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(messageString);
-    }
-  });
+function handleGetPayments(connection: WebSocket): void {
+  const payments = paymentService.getAllPayments();
+  connection.send(JSON.stringify({ type: "PAYMENTS_LIST", payload: payments }));
 }
