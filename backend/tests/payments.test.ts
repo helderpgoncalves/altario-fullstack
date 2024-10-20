@@ -42,7 +42,7 @@ describe("Payments API", () => {
         payload: samplePayment,
       });
 
-      expect(response.statusCode).toBe(200);
+      expect(response.statusCode).toBe(201);
       const payload = JSON.parse(response.payload);
       expect(payload).toMatchObject(samplePayment);
       expect(payload.id).toMatch(
