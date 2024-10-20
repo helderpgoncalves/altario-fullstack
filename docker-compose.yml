@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  # Backend service configuration
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  # Frontend service configuration
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: unless-stopped
