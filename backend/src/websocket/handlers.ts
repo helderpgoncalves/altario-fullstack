@@ -1,4 +1,4 @@
-import { WebSocket } from "ws";
+import WebSocket from "ws";
 import { gridService } from "../services/gridService";
 import { paymentService } from "../services/paymentService";
 
@@ -13,7 +13,7 @@ const clients: Set<WebSocket> = new Set();
 export const websocketHandlers = {
   /**
    * Handles a new WebSocket connection
-   * @param connection - The WebSocket connection
+   * @param {WebSocket} connection - The WebSocket connection
    */
   handleConnection: (connection: WebSocket) => {
     clients.add(connection);
@@ -34,6 +34,14 @@ export const websocketHandlers = {
       clients.delete(connection);
     });
   },
+
+  broadcastToAll: (message: string) => {
+    clients.forEach(client => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  },
 };
 
 /**
@@ -48,7 +56,7 @@ function handleStartGenerator(): void {
 /**
  * Handles the ADD_PAYMENT message
  * Creates a new payment and broadcasts it to all clients
- * @param paymentData - The payment data to be added
+ * @param {any} paymentData - The payment data to be added
  */
 function handleAddPayment(paymentData: any): void {
   const newPayment = paymentService.createPayment(paymentData);
@@ -57,7 +65,7 @@ function handleAddPayment(paymentData: any): void {
 
 /**
  * Broadcasts a message to all connected clients
- * @param message - The message to broadcast
+ * @param {any} message - The message to broadcast
  */
 function broadcast(message: any): void {
   const messageString = JSON.stringify(message);

@@ -11,10 +11,15 @@ fastify.register(cors, { origin: true });
 fastify.register(websocket);
 fastify.register(gridRoutes);
 fastify.register(paymentRoutes);
+fastify.register(async (fastify) => {
+  fastify.get('/ws', { websocket: true }, (connection) => {
+    websocketHandlers.handleConnection(connection);
+  });
+});
 
-fastify.get("/ws", { websocket: true }, websocketHandlers.handleConnection);
-
-fastify.get("/", () => ({ message: "Hello from the backend!" }));
+fastify.get("/", async (request, reply) => {
+  return { message: "Hello from the backend!" };
+});
 
 const start = async () => {
   try {

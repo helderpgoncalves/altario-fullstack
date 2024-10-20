@@ -1,3 +1,5 @@
+import { websocketHandlers } from "../websocket/handlers";
+
 export interface GridData {
   grid: string[][];
   code: string;
@@ -24,8 +26,10 @@ export const gridService = {
     const countChar1 = grid.flat().filter((char) => char === char1).length;
     const countChar2 = grid.flat().filter((char) => char === char2).length;
 
-    const finalCount1 = countChar1 > 9 ? Math.floor(countChar1 / 2) : countChar1;
-    const finalCount2 = countChar2 > 9 ? Math.floor(countChar2 / 2) : countChar2;
+    const finalCount1 =
+      countChar1 > 9 ? Math.floor(countChar1 / 2) : countChar1;
+    const finalCount2 =
+      countChar2 > 9 ? Math.floor(countChar2 / 2) : countChar2;
 
     return `${finalCount1}${finalCount2}`;
   },
@@ -36,10 +40,26 @@ export const gridService = {
     const seconds = new Date().getSeconds();
 
     return { grid, code, seconds };
-  }
+  },
+
+  broadcastGridUpdate: () => {
+    const gridData = gridService.generateGridData();
+    
+    // Create the message to be sent
+    const message = JSON.stringify({ type: "GRID_UPDATE", payload: gridData });
+    
+    // Use the websocketHandlers to broadcast the message to all connected clients
+    websocketHandlers.broadcastToAll(message);
+    
+    // Log the broadcast (for debugging purposes)
+    console.log('Broadcasting grid update:', message);
+  },
 };
 
-function createRandomGrid(gridSize: number, biasChar: string | null): string[][] {
+function createRandomGrid(
+  gridSize: number,
+  biasChar: string | null
+): string[][] {
   return Array.from({ length: gridSize }, () =>
     Array.from({ length: gridSize }, () => {
       let char;
@@ -51,7 +71,12 @@ function createRandomGrid(gridSize: number, biasChar: string | null): string[][]
   );
 }
 
-function addBiasCharacters(grid: string[][], biasChar: string, totalCells: number, gridSize: number): void {
+function addBiasCharacters(
+  grid: string[][],
+  biasChar: string,
+  totalCells: number,
+  gridSize: number
+): void {
   const targetBiasCount = Math.floor(totalCells * 0.2);
   const biasPositions = new Set<number>();
 
@@ -65,4 +90,3 @@ function addBiasCharacters(grid: string[][], biasChar: string, totalCells: numbe
     }
   }
 }
-
