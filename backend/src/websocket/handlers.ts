@@ -1,11 +1,12 @@
 import WebSocket from "ws";
 import { gridService } from "../services/gridService";
 import { paymentService } from "../services/paymentService";
+import { Payment } from "../services/paymentService";
 
 /**
  * Set of connected WebSocket clients
  */
-const clients: Set<WebSocket> = new Set();
+const clients: Set<WebSocket> = new Set<WebSocket>();
 
 /**
  * WebSocket handlers for managing connections and messages
@@ -31,7 +32,7 @@ export const websocketHandlers = {
           handleStartGenerator(data.payload?.biasChar || null);
           break;
         case "ADD_PAYMENT":
-          handleAddPayment(data.payload, connection);
+          handleAddPayment(data.payload);
           break;
         case "GET_PAYMENTS":
           handleGetPayments(connection);
@@ -44,7 +45,7 @@ export const websocketHandlers = {
     });
   },
 
-  broadcastToAll: (message: any) => {
+  broadcastToAll: (message: unknown) => {
     const messageString = JSON.stringify(message);
     clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
@@ -66,9 +67,9 @@ function handleStartGenerator(biasChar: string | null): void {
 /**
  * Handles the ADD_PAYMENT message
  * Creates a new payment and broadcasts it to all clients
- * @param {any} paymentData - The payment data to be added
+ * @param {Payment} paymentData - The payment data to be added
  */
-function handleAddPayment(paymentData: any, connection: WebSocket): void {
+function handleAddPayment(paymentData: Payment): void {
   const newPayment = paymentService.createPayment(paymentData);
   websocketHandlers.broadcastToAll({
     type: "PAYMENT_ADDED",

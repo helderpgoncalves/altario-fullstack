@@ -4,6 +4,7 @@ import WebSocket from 'ws';
 import { gridRoutes } from '../src/routes/grid';
 import paymentRoutes from '../src/routes/payments';
 import { websocketHandlers } from '../src/websocket/handlers';
+import { AddressInfo } from 'net';
 
 describe('WebSocket Tests', () => {
   let app: FastifyInstance;
@@ -27,7 +28,7 @@ describe('WebSocket Tests', () => {
   });
 
   beforeEach((done) => {
-    ws = new WebSocket(`ws://localhost:${(app.server.address() as any).port}/ws`);
+    ws = new WebSocket(`ws://localhost:${(app.server.address() as AddressInfo).port}/ws`);
     ws.on('open', done);
   });
 
@@ -61,7 +62,7 @@ describe('WebSocket Tests', () => {
 
     ws.send(JSON.stringify({ type: 'ADD_PAYMENT', payload: paymentData }));
 
-    ws.once('message', (data: any) => {
+    ws.once('message', (data: WebSocket.Data) => {
       const message = JSON.parse(data.toString());
       expect(message.type).toBe('PAYMENT_ADDED');
       expect(message.payload).toMatchObject(paymentData);

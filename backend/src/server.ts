@@ -17,7 +17,7 @@ fastify.register(async (fastify) => {
   });
 });
 
-fastify.get("/", async (request, reply) => {
+fastify.get("/", async () => {
   return { message: "Hello from the backend!" };
 });
 
