@@ -10,8 +10,8 @@ const GridScreen: React.FC = () => {
   const handleStartStop = () => setIsGenerating((prev) => !prev);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-6 sm:mb-8 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 pt-16">
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 sm:mb-8 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
         10x10 Grid Generator
       </h1>
       <GridGenerator
