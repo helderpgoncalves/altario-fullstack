@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --background-color: #f0f0f0;
+  --text-color: #333333;
+  --font-family: 'Arial', sans-serif;
+}
+body {
+  @apply bg-gradient-to-r from-gray-100 to-blue-50;
+  @apply text-gray-800;
+  @apply font-sans;
+  @apply m-0 p-0;
+}
+
+/* Remove the @keyframes and animation as they're not needed for a clean background */
