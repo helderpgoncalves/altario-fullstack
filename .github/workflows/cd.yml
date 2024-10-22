@@ -2,7 +2,9 @@ name: Continuous Deployment
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - feat/*
 
 jobs:
   deploy:
