@@ -1,6 +1,14 @@
+// Define the WebSocketMessage type
+export type WebSocketMessage = {
+  type: string;
+  payload: unknown;
+};
+
 let socket: WebSocket | null = null;
 
-export const connectWebSocket = (onMessage: (data: any) => void) => {
+export const connectWebSocket = (
+  onMessage: (data: WebSocketMessage) => void
+) => {
   socket = new WebSocket("ws://localhost:3000/ws");
 
   socket.onopen = () => {
@@ -8,7 +16,7 @@ export const connectWebSocket = (onMessage: (data: any) => void) => {
   };
 
   socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
+    const data = JSON.parse(event.data) as WebSocketMessage;
     onMessage(data);
   };
 
@@ -22,7 +30,7 @@ export const connectWebSocket = (onMessage: (data: any) => void) => {
   };
 };
 
-export const sendWebSocketMessage = (message: any) => {
+export const sendWebSocketMessage = (message: WebSocketMessage) => {
   if (socket && socket.readyState === WebSocket.OPEN) {
     socket.send(JSON.stringify(message));
   } else {

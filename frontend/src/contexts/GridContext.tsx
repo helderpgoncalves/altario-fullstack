@@ -9,6 +9,7 @@ import { GridData, Payment } from "../types";
 import {
   connectWebSocket,
   sendWebSocketMessage,
+  WebSocketMessage,
 } from "../websocket/connection";
 import { v4 as uuidv4 } from "uuid";
 
@@ -70,13 +71,13 @@ export const GridProvider: React.FC<{ children: React.ReactNode }> = ({
     /**
      * Handles incoming WebSocket messages
      */
-    const handleWebSocketMessage = (data: any) => {
+    const handleWebSocketMessage = (data: WebSocketMessage) => {
       switch (data.type) {
         case "GRID_UPDATE":
-          setGridData(data.payload);
+          setGridData(data.payload as GridData);
           break;
         case "PAYMENTS_LIST":
-          setPayments(data.payload);
+          setPayments(data.payload as Payment[]);
           break;
       }
     };
@@ -84,7 +85,7 @@ export const GridProvider: React.FC<{ children: React.ReactNode }> = ({
     connectWebSocket(handleWebSocketMessage);
 
     // Fetch initial payments
-    sendWebSocketMessage({ type: "GET_PAYMENTS" });
+    sendWebSocketMessage({ type: "GET_PAYMENTS", payload: undefined });
   }, []);
 
   useEffect(() => {
@@ -118,7 +119,7 @@ export const GridProvider: React.FC<{ children: React.ReactNode }> = ({
    */
   const stopGenerating = () => {
     setIsGenerating(false);
-    sendWebSocketMessage({ type: "STOP_GENERATOR" });
+    sendWebSocketMessage({ type: "STOP_GENERATOR", payload: undefined });
   };
 
   /**
